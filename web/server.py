@@ -11,7 +11,17 @@ app = Flask(__name__)
 
 @app.route('/saludar')
 def hello():
-    return "HOLA2"
+    return "HOLA!!"
+
+@app.route('/palindrome/<palabra>')
+def es_palidromo(palabra):
+    return str(palabra == palabra[::-1])
+
+
+@app.route('/multiplo/<numero1>/<numero2>')
+def es_multiplo(numero1, numero2):
+    return str(int(numero1) % int(numero2) == 0)
+
 
 
 @app.route('/static/<content>')
