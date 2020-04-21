@@ -9,6 +9,10 @@ engine = db.createEngine()
 
 app = Flask(__name__)
 
+@app.route('/saludar')
+def hello():
+    return "HOLA2"
+
 
 @app.route('/static/<content>')
 def static_content(content):
