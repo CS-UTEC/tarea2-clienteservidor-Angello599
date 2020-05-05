@@ -9,6 +9,41 @@ engine = db.createEngine()
 
 app = Flask(__name__)
 
+@app.route('/sumar/<n1>/<n2>')
+def sumar_stateless(n1, n2):
+    return str(int(n1) + int(n2))
+
+
+@app.route('/sumar/<n>')
+def sumar_statefull(n):
+    key = 'suma'
+    if key in session:
+        session[key] += int(n)
+    else:
+        session[key] = int(n)
+    return str(session[key])
+
+@app.route('/login', methods=['POST'])
+def login():
+    print(request.form.get('username'))
+    username = request.form.get('username')
+    password = request.form.get('password')
+    #key = 'username'
+    #if key in session:
+        #return str(request.form.get('username')) + " you already logged"
+    db_session = db.getSession(engine)
+    respuesta = db_session.query(entities.User).filter(
+        entities.User.username == username
+    ).filter(entities.User.password == password)
+
+    users = respuesta[:]
+    if len(users)>0:
+        #session[key] = username
+        #print(session[key])
+        return "Login successful"
+    return "Login fail"
+
+
 @app.route('/saludar')
 def hello():
     return "HOLA!!"
@@ -55,8 +90,8 @@ def read_users():
     i = 0
     respuesta2= ""
     for user in users:
-        respuesta2 += "Nombre: "+str(user.name)+ "&nbsp;&nbsp;&nbsp;&nbsp;"  +"Apellido: "+str(user.fullname) +"<br>"
-        print(i, "NAME:\t", user.name, "\t\t", "APELLIDO:\t", user.fullname)
+        respuesta2 += "Usuario: "+str(user.username)+ "&nbsp;&nbsp;&nbsp;&nbsp;"  +"Contraseña: "+str(user.password) +"<br>"
+        print(i, "USERNAME:\t", user.username, "\t\t", "PASSWORD:\t", user.password)
         i+=1
     return respuesta2
 
